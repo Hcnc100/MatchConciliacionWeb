@@ -1,0 +1,37 @@
+<main class="comparator-shell">
+  <div class="ambient ambient-one" aria-hidden="true"></div>
+  <div class="ambient ambient-two" aria-hidden="true"></div>
+  <article class="comparator-card">
+    <header class="hero-copy">
+      <span class="eyebrow"><span class="eyebrow-dot"></span>Herramienta de conciliación</span>
+      <h1>Banco <span>vs</span> Ventas</h1>
+      <p>Cruza tus movimientos bancarios con el reporte de ventas y descarga un Excel listo para revisar.</p>
+    </header>
+    <div class="upload-grid">
+      <label class="upload-card" [class.has-file]="bancoFile()" for="banco-file">
+        <input id="banco-file" type="file" accept=".xlsx" (change)="onBancoSelected($event)" />
+        <span class="upload-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7.5h16v11H4z"/><path d="M8 7.5V5.8A1.8 1.8 0 0 1 9.8 4h4.4A1.8 1.8 0 0 1 16 5.8v1.7"/><path d="M12 16v-5m0 0-2 2m2-2 2 2"/></svg></span>
+        <span class="upload-copy"><span class="step-label">01 · Archivo Banco</span><strong>{{ bancoFile()?.name || 'Seleccionar estado de cuenta' }}</strong><small>{{ bancoFile() ? 'Archivo listo para procesar' : 'Formato Excel .xlsx' }}</small></span>
+        <span class="upload-status" aria-hidden="true">@if (bancoFile()) {<svg viewBox="0 0 24 24" fill="none"><path d="m7 12 3.2 3.2L17 8.5"/></svg>} @else {<svg viewBox="0 0 24 24" fill="none"><path d="m9 18 6-6-6-6"/></svg>}</span>
+      </label>
+      <label class="upload-card" [class.has-file]="ventasFile()" for="ventas-file">
+        <input id="ventas-file" type="file" accept=".xlsx" (change)="onVentasSelected($event)" />
+        <span class="upload-icon sales" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 4h14v16H5z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg></span>
+        <span class="upload-copy"><span class="step-label">02 · Archivo Ventas</span><strong>{{ ventasFile()?.name || 'Seleccionar reporte de ventas' }}</strong><small>{{ ventasFile() ? 'Archivo listo para procesar' : 'Formato Excel .xlsx' }}</small></span>
+        <span class="upload-status" aria-hidden="true">@if (ventasFile()) {<svg viewBox="0 0 24 24" fill="none"><path d="m7 12 3.2 3.2L17 8.5"/></svg>} @else {<svg viewBox="0 0 24 24" fill="none"><path d="m9 18 6-6-6-6"/></svg>}</span>
+      </label>
+    </div>
+    <div class="options-row">
+      <span class="option-copy"><strong>Omitir primera fila</strong><small>Úsalo cuando la primera fila contiene un título adicional.</small></span>
+      <label class="switch"><input type="checkbox" [checked]="omitirPrimeraFila()" (change)="setOmitirPrimeraFila($event)" /><span class="switch-track" aria-hidden="true"></span><span class="sr-only">Omitir primera fila</span></label>
+    </div>
+    @if (errorMessage()) {
+      <div class="error-message" role="alert" aria-live="assertive"><span class="error-icon" aria-hidden="true">!</span><span><strong>No se pudo generar la conciliación</strong><small>{{ errorMessage() }}</small></span></div>
+    }
+    <button class="button-compare" type="button" (click)="comparar()" [disabled]="loading() || !bancoFile() || !ventasFile()"><span>{{ loading() ? 'Procesando archivos...' : 'Generar conciliación' }}</span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></button>
+    <p class="security-note"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 10V8a5 5 0 0 1 10 0v2M6 10h12v10H6z"/></svg>Tus archivos se usan únicamente para generar la conciliación.</p>
+  </article>
+</main>
+@if (loading()) {
+  <div class="loading-overlay" role="status" aria-live="polite"><div class="loading-card"><div class="spinner"></div><strong>Conciliando archivos</strong><p>Estamos comparando fechas, montos y referencias.</p></div></div>
+}

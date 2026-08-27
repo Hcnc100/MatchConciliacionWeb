@@ -1,0 +1,13 @@
+{
+  "hosting": {
+    "site": "ricardopajarocoatl-conciliacion",
+    "public": "dist/MatchConciliacionWeb/browser",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
