@@ -1,0 +1,101 @@
+<main class="page-shell">
+  <div class="orb orb-one" aria-hidden="true"></div>
+  <div class="orb orb-two" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Inicio Conciliador">
+      <span class="brand-mark">M</span>
+      <span>Match<span class="brand-accent">Flow</span></span>
+    </a>
+    <span class="system-status"><i></i>Sistema disponible</span>
+  </header>
+
+  <section class="hero">
+    <div class="eyebrow"><span></span> Conciliación inteligente</div>
+    <h1>Convierte dos archivos en <br><em>decisiones claras.</em></h1>
+    <p>Compara movimientos bancarios contra ventas, identifica coincidencias y descarga un reporte listo para revisar.</p>
+  </section>
+
+  <section class="workspace" aria-labelledby="workspace-title">
+    <div class="workspace-header">
+      <div><span class="step-label">Paso 1 de 2</span><h2 id="workspace-title">Carga tus archivos</h2></div>
+      <span class="format-pill">XLSX</span>
+    </div>
+
+    <div class="file-grid">
+      <label class="file-card" [class.has-file]="bancoFile()">
+        <input type="file" accept=".xlsx" (change)="onBancoSelected($event)" />
+        <span class="file-icon bank" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M3 10h18M5 10v8m4-8v8m6-8v8m4-8v8M3 21h18M12 3l9 5H3l9-5Z"/></svg>
+        </span>
+        <span class="file-copy">
+          <strong>Movimientos bancarios</strong>
+          @if (bancoFile(); as file) {
+            <span class="file-name">{{ file.name }}</span><small>{{ formatFileSize(file.size) }} · Listo para comparar</small>
+          } @else {
+            <span>Selecciona el estado de cuenta</span><small>Archivo Excel de movimientos</small>
+          }
+        </span>
+        <span class="file-action">{{ bancoFile() ? 'Cambiar' : 'Seleccionar' }}</span>
+      </label>
+
+      <div class="connector" aria-hidden="true"><span>+</span></div>
+
+      <label class="file-card" [class.has-file]="ventasFile()">
+        <input type="file" accept=".xlsx" (change)="onVentasSelected($event)" />
+        <span class="file-icon sales" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 9h8m-8 4h5m-5 4h8"/></svg>
+        </span>
+        <span class="file-copy">
+          <strong>Reporte de ventas</strong>
+          @if (ventasFile(); as file) {
+            <span class="file-name">{{ file.name }}</span><small>{{ formatFileSize(file.size) }} · Listo para comparar</small>
+          } @else {
+            <span>Selecciona el reporte de ventas</span><small>Archivo Excel del periodo</small>
+          }
+        </span>
+        <span class="file-action">{{ ventasFile() ? 'Cambiar' : 'Seleccionar' }}</span>
+      </label>
+    </div>
+
+    <div class="options-row">
+      <label class="toggle-option">
+        <input type="checkbox" [checked]="omitirPrimeraFila()" (change)="omitirPrimeraFila.set($event.target.checked)" />
+        <span class="toggle" aria-hidden="true"></span>
+        <span><strong>Omitir primera fila</strong><small>Úsalo si tus archivos incluyen encabezados</small></span>
+      </label>
+      <button class="compare-button" (click)="comparar()" [disabled]="loading() || !bancoFile() || !ventasFile()">
+        @if (loading()) { <span class="spinner" aria-hidden="true"></span> Procesando }
+        @else { Comparar archivos <span aria-hidden="true">→</span> }
+      </button>
+    </div>
+
+    @if (loading()) {
+      <section class="progress-panel" role="status" aria-live="polite">
+        <div class="progress-topline">
+          <div class="processing-icon"><span></span><span></span><span></span></div>
+          <div class="progress-copy"><strong>{{ progressMessage() }}</strong><span>Esto puede tomar unos momentos</span></div>
+          <b>{{ progress() }}%</b>
+        </div>
+        <div class="progress-track" aria-hidden="true"><span [style.width.%]="progress()"></span></div>
+        <div class="progress-steps" aria-hidden="true">
+          <span class="done">Archivos recibidos</span><span [class.done]="progress() >= 35">Analizando</span><span [class.done]="progress() >= 75">Generando reporte</span>
+        </div>
+      </section>
+    }
+
+    @if (completed() && !loading()) {
+      <section class="success-panel" role="status">
+        <span class="success-icon">✓</span><div><strong>Conciliación completada</strong><span>Tu reporte resultado.xlsx se descargó correctamente.</span></div>
+      </section>
+    }
+
+    @if (errorMessage()) {
+      <section class="error-message" role="alert">
+        <span>!</span><div><strong>No pudimos completar la conciliación</strong><p>{{ errorMessage() }}</p></div>
+      </section>
+    }
+  </section>
+
+  <footer><span>Tus archivos se procesan de forma segura y no se almacenan.</span><span>MatchFlow · Conciliador</span></footer>
+</main>
