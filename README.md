@@ -24,4 +24,6 @@ npm run build
 
 Cada cambio enviado a la rama `main` se compila y publica automáticamente en el sitio Firebase independiente `ricardopajarocoatl-conciliacion`.
 
-Dominio de producción: `https://conciliacion.ricardopajarocoatl.com`
+Frontend de producción: `https://admin.conciliacion.ricardopajarocoatl.com`
+
+API de producción: `https://api.conciliacion.ricardopajarocoatl.com`
