@@ -16,6 +16,7 @@ permissions:
 concurrency:
   group: deploy-conciliacion-production
   cancel-in-progress: false
+  queue: max
 
 jobs:
   build_and_deploy:
