@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - '.github/scripts/**'
+      - '.github/workflows/**'
   workflow_dispatch:
 
 permissions:
@@ -20,6 +23,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+      - name: Test retention safeguards
+        run: python3 -B -m unittest discover -s .github/scripts -p 'test_*retention*.py'
 
       - name: Authenticate to Google Cloud
         id: auth
@@ -29,6 +34,9 @@ jobs:
           workload_identity_provider: projects/646388363945/locations/global/workloadIdentityPools/github-actions/providers/matchconciliacion
           service_account: github-actions-firebase@nullpointer-716ae.iam.gserviceaccount.com
           create_credentials_file: true
+      - uses: google-github-actions/setup-gcloud@v3
+      - name: Gate deployment on Hosting retention
+        run: python3 .github/scripts/retention_guard.py --project nullpointer-716ae --hosting-site ricardopajarocoatl-conciliacion
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -50,3 +58,5 @@ jobs:
           --only hosting
           --project nullpointer-716ae
           --non-interactive
+      - name: Verify retention after successful release
+        run: python3 .github/scripts/retention_guard.py --project nullpointer-716ae --hosting-site ricardopajarocoatl-conciliacion
